@@ -44,6 +44,7 @@ const Profile = () => {
 
   // Logout Logic
   const handleLogout = () => {
+    localStorage.removeItem("auth_token");
     localStorage.removeItem("token");
     window.location.href = "/login";
   };
