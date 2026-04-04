@@ -22,13 +22,15 @@ function Login() {
         // Save token in localStorage
         localStorage.setItem("auth_token", data.token);
 
-        // Optional: save user info
         if (data.user) {
           localStorage.setItem("user_name", data.user.name);
           localStorage.setItem("user_id", data.user.id);
+          localStorage.setItem("user_role", data.user.role);
         }
 
-        navigate("/home");
+        if (data.user.role === "customer") navigate("/home");
+        else if (data.user.role === "pharmacy") navigate("/pharmacy");
+        else if (data.user.role === "rider") navigate("/rider");
       } else {
         alert("Login Failed: " + (data.message || "Check credentials"));
       }
@@ -53,41 +55,41 @@ function Login() {
               style={styles.input}
               placeholder=" "
             />
-          <label
-            style={{
-              ...styles.label,
-              top: email ? "-10px" : "50%",
-              fontSize: email ? "12px" : "16px",
-              color: email ? "#4da6ff" : "#e0e0e0",
-            }}
-          >
-            Email
-          </label>
-        </div>
+            <label
+              style={{
+                ...styles.label,
+                top: email ? "-10px" : "50%",
+                fontSize: email ? "12px" : "16px",
+                color: email ? "#4da6ff" : "#e0e0e0",
+              }}
+            >
+              Email
+            </label>
+          </div>
 
-        {/* Password Input */}
-        <div style={styles.inputGroup}>
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={styles.input}
-            placeholder=" "
-          />
-          <label
-            style={{
-              ...styles.label,
-              top: password ? "-10px" : "50%",
-              fontSize: password ? "12px" : "16px",
-              color: password ? "#4da6ff" : "#e0e0e0",
-            }}
-          >
-            Password
-          </label>
-        </div>
+          {/* Password Input */}
+          <div style={styles.inputGroup}>
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={styles.input}
+              placeholder=" "
+            />
+            <label
+              style={{
+                ...styles.label,
+                top: password ? "-10px" : "50%",
+                fontSize: password ? "12px" : "16px",
+                color: password ? "#4da6ff" : "#e0e0e0",
+              }}
+            >
+              Password
+            </label>
+          </div>
 
-        {/* Login Button */}
+          {/* Login Button */}
           <button type="submit" style={styles.button}>
             Login
           </button>

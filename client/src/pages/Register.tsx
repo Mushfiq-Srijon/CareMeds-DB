@@ -147,8 +147,8 @@ function Register() {
           >
             <option value="">Select Role</option>
             <option value="customer">Customer</option>
-            <option value="admin">Admin</option>
-            <option value="shopkeeper">Shopkeeper</option>
+            <option value="pharmacy">Pharmacy</option>
+            <option value="rider">Rider</option>
           </select>
         </div>
 
