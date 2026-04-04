@@ -5,6 +5,7 @@ import '../styles/Navigation.css';
 export default function Navigation() {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const role = localStorage.getItem("user_role") || "";
 
   // Hide navbar on landing page
   if (location.pathname === '/') {
@@ -13,13 +14,17 @@ export default function Navigation() {
 
   const isActive = (path: string) => location.pathname === path;
 
-  const navItems = [
-    { path: '/home', label: 'Home' },
-    { path: '/about', label: 'About' },
-    { path: '/help', label: 'Help' },
-    { path: '/cart', label: 'Cart' },
-    { path: '/profile', label: 'User Profile' },
+  const allNavItems = [
+    { path: '/home', label: 'Home', roles: ['customer'] },
+    { path: '/cart', label: 'Cart', roles: ['customer'] },
+    { path: '/pharmacy', label: 'Dashboard', roles: ['pharmacy'] },
+    { path: '/rider', label: 'My Orders', roles: ['rider'] },
+    { path: '/about', label: 'About', roles: ['customer', 'pharmacy', 'rider'] },
+    { path: '/help', label: 'Help', roles: ['customer', 'pharmacy', 'rider'] },
+    { path: '/profile', label: 'User Profile', roles: ['customer', 'pharmacy', 'rider'] },
   ];
+
+  const navItems = allNavItems.filter(item => item.roles.includes(role));
 
   return (
     <nav className="custom-navbar">

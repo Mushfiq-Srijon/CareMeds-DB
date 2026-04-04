@@ -46,9 +46,9 @@ public function store(Request $request)
 
         // Insert order
         DB::insert(
-            "INSERT INTO orders (user_id, pharmacy_id, delivery_type, delivery_charge, total_price, rider_id)
-             VALUES (?, ?, ?, ?, ?, ?)",
-            [Auth::id(), $request->pharmacy_id, $request->delivery_type, $deliveryCharge, $totalPrice, $riderId]
+            "INSERT INTO orders (user_id, pharmacy_id, delivery_type, delivery_charge, total_price, rider_id, phone, address)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [Auth::id(), $request->pharmacy_id, $request->delivery_type, $deliveryCharge, $totalPrice, $riderId, $request->phone, $request->address]
         );
 
         $orderId = DB::getPdo()->lastInsertId();

@@ -7,7 +7,8 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     try {
       const response = await fetch("http://localhost:8000/api/login", {
         method: "POST",
@@ -21,13 +22,15 @@ function Login() {
         // Save token in localStorage
         localStorage.setItem("auth_token", data.token);
 
-        // Optional: save user info
         if (data.user) {
           localStorage.setItem("user_name", data.user.name);
           localStorage.setItem("user_id", data.user.id);
+          localStorage.setItem("user_role", data.user.role);
         }
 
-        navigate("/home");
+        if (data.user.role === "customer") navigate("/home");
+        else if (data.user.role === "pharmacy") navigate("/pharmacy");
+        else if (data.user.role === "rider") navigate("/rider");
       } else {
         alert("Login Failed: " + (data.message || "Check credentials"));
       }
@@ -41,55 +44,56 @@ function Login() {
     <div style={styles.container}>
       <div style={styles.card}>
         <h2 style={styles.title}>Login</h2>
+        <form onSubmit={handleLogin}>
+          {/* Email Input */}
+          <div style={styles.inputGroup}>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={styles.input}
+              placeholder=" "
+            />
+            <label
+              style={{
+                ...styles.label,
+                top: email ? "-10px" : "50%",
+                fontSize: email ? "12px" : "16px",
+                color: email ? "#4da6ff" : "#e0e0e0",
+              }}
+            >
+              Email
+            </label>
+          </div>
 
-        {/* Email Input */}
-        <div style={styles.inputGroup}>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={styles.input}
-            placeholder=" "
-          />
-          <label
-            style={{
-              ...styles.label,
-              top: email ? "-10px" : "50%",
-              fontSize: email ? "12px" : "16px",
-              color: email ? "#4da6ff" : "#e0e0e0",
-            }}
-          >
-            Email
-          </label>
-        </div>
+          {/* Password Input */}
+          <div style={styles.inputGroup}>
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={styles.input}
+              placeholder=" "
+            />
+            <label
+              style={{
+                ...styles.label,
+                top: password ? "-10px" : "50%",
+                fontSize: password ? "12px" : "16px",
+                color: password ? "#4da6ff" : "#e0e0e0",
+              }}
+            >
+              Password
+            </label>
+          </div>
 
-        {/* Password Input */}
-        <div style={styles.inputGroup}>
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={styles.input}
-            placeholder=" "
-          />
-          <label
-            style={{
-              ...styles.label,
-              top: password ? "-10px" : "50%",
-              fontSize: password ? "12px" : "16px",
-              color: password ? "#4da6ff" : "#e0e0e0",
-            }}
-          >
-            Password
-          </label>
-        </div>
-
-        {/* Login Button */}
-        <button onClick={handleLogin} style={styles.button}>
-          Login
-        </button>
+          {/* Login Button */}
+          <button type="submit" style={styles.button}>
+            Login
+          </button>
+        </form>
 
         {/* Signup Link */}
         <p style={styles.signupText}>
