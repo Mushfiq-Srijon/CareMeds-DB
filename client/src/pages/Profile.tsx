@@ -16,8 +16,15 @@ const Profile = () => {
   const [passwords, setPasswords] = useState({ current: "", new: "", confirm: "" });
   const [message, setMessage] = useState("");
 
+  const isValidPhone = (value: string) => /^01\d{9}$/.test(value);
+
   // Save Profile Logic
   const handleSaveProfile = () => {
+    if (editData.phone && !isValidPhone(editData.phone)) {
+      alert("Please enter a valid phone number");
+      return;
+    }
+
     localStorage.setItem('user_name', editData.name);
     localStorage.setItem('user_phone', editData.phone);
     localStorage.setItem('user_address', editData.address);
@@ -46,7 +53,7 @@ const Profile = () => {
   const handleLogout = () => {
     localStorage.removeItem("auth_token");
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
   return (

@@ -7,7 +7,8 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     try {
       const response = await fetch("http://localhost:8000/api/login", {
         method: "POST",
@@ -41,17 +42,17 @@ function Login() {
     <div style={styles.container}>
       <div style={styles.card}>
         <h2 style={styles.title}>Login</h2>
-
-        {/* Email Input */}
-        <div style={styles.inputGroup}>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={styles.input}
-            placeholder=" "
-          />
+        <form onSubmit={handleLogin}>
+          {/* Email Input */}
+          <div style={styles.inputGroup}>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={styles.input}
+              placeholder=" "
+            />
           <label
             style={{
               ...styles.label,
@@ -87,9 +88,10 @@ function Login() {
         </div>
 
         {/* Login Button */}
-        <button onClick={handleLogin} style={styles.button}>
-          Login
-        </button>
+          <button type="submit" style={styles.button}>
+            Login
+          </button>
+        </form>
 
         {/* Signup Link */}
         <p style={styles.signupText}>

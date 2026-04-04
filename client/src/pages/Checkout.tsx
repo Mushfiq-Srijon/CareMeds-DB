@@ -44,8 +44,11 @@ export default function Checkout() {
   const deliveryCharge = deliveryType === "home_delivery" ? 50 : 0;
   const grandTotal = totalPrice + deliveryCharge;
 
+  const isValidPhone = (value: string) => /^01\d{9}$/.test(value);
+
   const placeOrder = async () => {
     if (!customerName || !phone || !address) return toast.error("Fill all fields");
+    if (!isValidPhone(phone)) return toast.error("Please enter a valid phone number (11 digits, starts with 01)");
     if (cartItems.length === 0) return toast.error("Cart is empty");
 
     setPlacingOrder(true);
@@ -54,6 +57,8 @@ export default function Checkout() {
       await apiClient.post("/api/orders", {
         pharmacy_id: 1,
         delivery_type: deliveryType,
+        phone: phone,
+        address: address,
         items: cartItems.map(item => ({
           medicine_id: item.medicine_id,
           quantity: item.quantity

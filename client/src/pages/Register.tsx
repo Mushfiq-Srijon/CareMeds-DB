@@ -10,7 +10,8 @@ function Register() {
   const [role, setRole] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = async () => {
+  const handleRegister = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     // Validation
     if (!role) {
       alert("Please select a role");
@@ -33,7 +34,7 @@ function Register() {
       if (response.ok) {
         alert("Registration Success");
         console.log("Success:", data);
-        navigate("/login"); // Redirect to login
+        navigate("/login");
       } else {
         alert("Registration Failed: " + (data.message || "Invalid input or already registered"));
       }
@@ -47,6 +48,7 @@ function Register() {
     <div style={styles.container}>
       <div style={styles.card}>
         <h2 style={styles.title}>Register</h2>
+        <form onSubmit={handleRegister}>
 
         {/* Name */}
         <div style={styles.inputGroup}>
@@ -151,9 +153,10 @@ function Register() {
         </div>
 
         {/* Register Button */}
-        <button onClick={handleRegister} style={styles.button}>
-          Register
-        </button>
+          <button type="submit" style={styles.button}>
+            Register
+          </button>
+        </form>
 
         <p style={styles.loginText}>
           Already have an account?{" "}
