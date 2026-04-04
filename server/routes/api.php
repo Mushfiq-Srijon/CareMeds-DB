@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\EmailVerificationController;
 /*
@@ -15,8 +16,11 @@ use App\Http\Controllers\EmailVerificationController;
 */
 
 // Public Routes
+// Public Routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/auth/google', [GoogleAuthController::class, 'redirect']);
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback']);
 
 Route::get('/medicines', [MedicineController::class, 'index']);
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink']);
@@ -28,6 +32,7 @@ Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 've
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/email/resend', [EmailVerificationController::class, 'sendVerificationEmail']);
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::post('/orders', [OrderController::class, 'store']);
     Route::get('/my-orders', [OrderController::class, 'myOrders']);
 
@@ -37,4 +42,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/cart/clear', [CartController::class, 'clearCart']); // ← ADD HERE
     Route::get('/cart', [CartController::class, 'getMyCart']);
     Route::get('/cart/list', [CartController::class, 'getMyCart']);
+    Route::post('/auth/google/set-role', [GoogleAuthController::class, 'setRole']);
 });
