@@ -37,8 +37,7 @@ function Register() {
     }
   };
 
-  // Handles Google OAuth — same as Login page
-  // Google will handle name/email, then we send user to /select-role to pick their role
+   // Handles Google OAuth login
   const handleGoogleLogin = async () => {
     try {
       const res = await fetch("http://localhost:8000/api/auth/google");
@@ -52,7 +51,6 @@ function Register() {
       alert("Server error. Please try again.");
     }
   };
-
   return (
     <div style={styles.container}>
       <div style={styles.card}>

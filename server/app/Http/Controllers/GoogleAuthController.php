@@ -10,7 +10,7 @@ class GoogleAuthController extends Controller
 {
     // Line 10: Called when user clicks "Login with Google"
     // Redirects the user to Google's login page
-    public function redirect()
+  public function redirect()
     {
         $url = Socialite::driver('google')->stateless()->redirect()->getTargetUrl();
         return response()->json(['url' => $url]);
