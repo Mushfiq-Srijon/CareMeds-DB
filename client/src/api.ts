@@ -13,19 +13,10 @@ class ApiClient {
       },
     });
   }
-  async delete(endpoint: string, config?: AxiosRequestConfig) {
-    try {
-      const res = await this.client.delete(endpoint, { ...config, ...this.getAuthConfig() });
-      return res.data;
-    } catch (error: any) {
-      this.handleError(error);
-      throw error;
-    }
-  }
 
-  // Get auth headers with token
   private getAuthConfig() {
-    const token = localStorage.getItem('auth_token');
+    //  6: check both localStorage and sessionStorage
+    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
     if (!token) return {};
     return {
       headers: { Authorization: `Bearer ${token}` },
@@ -38,7 +29,7 @@ class ApiClient {
       return res.data;
     } catch (error: any) {
       this.handleError(error);
-      throw error; // VERY IMPORTANT
+      throw error;
     }
   }
 
@@ -48,7 +39,27 @@ class ApiClient {
       return res.data;
     } catch (error: any) {
       this.handleError(error);
-      throw error; // VERY IMPORTANT
+      throw error;
+    }
+  }
+
+  async put(endpoint: string, data: any, config?: AxiosRequestConfig) {
+    try {
+      const res = await this.client.put(endpoint, data, { ...config, ...this.getAuthConfig() });
+      return res.data;
+    } catch (error: any) {
+      this.handleError(error);
+      throw error;
+    }
+  }
+
+  async delete(endpoint: string, config?: AxiosRequestConfig) {
+    try {
+      const res = await this.client.delete(endpoint, { ...config, ...this.getAuthConfig() });
+      return res.data;
+    } catch (error: any) {
+      this.handleError(error);
+      throw error;
     }
   }
 
@@ -57,47 +68,80 @@ class ApiClient {
     return this.get('/api/medicines');
   }
 
-  // Add to cart
+  // 5: Get single medicine with pharmacy info
+  async getMedicineById(id: number) {
+    return this.get(`/api/medicines/${id}`);
+  }
+
+  // Cart
   async addToCart(medicineId: number, quantity: number = 1) {
     return this.post('/api/cart/add', { medicine_id: medicineId, quantity });
   }
 
   async getCart() {
-    return this.get("/api/cart/list");
+    return this.get('/api/cart/list');
   }
-  // Update quantity
+
   async updateCart(cartId: number, quantity: number) {
     return this.client.put(
-      "/api/cart/update",
+      '/api/cart/update',
       { cart_id: cartId, quantity },
       this.getAuthConfig()
     );
   }
 
-  // Remove item
   async removeCartItem(cartId: number) {
     return this.client.delete(
       `/api/cart/remove/${cartId}`,
       this.getAuthConfig()
     );
   }
-  // Clear entire cart
+
   async clearCart() {
-    return this.delete("/api/cart/clear");
+    return this.delete('/api/cart/clear');
   }
+
   async forgotPassword(email: string) {
     return this.post('/api/forgot-password', { email });
   }
 
-  async changePassword(currentPassword: string, newPassword: string) {
-    return this.post('/api/change-password', {
-      current_password: currentPassword,
-      new_password: newPassword
-    });
-  }
-
   async resetPassword(email: string, token: string, password: string) {
     return this.post('/api/reset-password', { email, token, password });
+  }
+
+  // 3: My Orders
+  async getMyOrders() {
+    return this.get('/api/my-orders');
+  }
+
+  //  2: Pharmacy
+  async getPharmacyProfile() {
+    return this.get('/api/pharmacy/profile');
+  }
+
+  async setupPharmacy(data: object) {
+    return this.post('/api/pharmacy/setup', data);
+  }
+
+  async getPharmacyMedicines() {
+    return this.get('/api/pharmacy/medicines');
+  }
+
+  async addMedicine(data: object) {
+    return this.post('/api/medicines', data);
+  }
+
+  async updateMedicine(id: number, data: object) {
+    return this.put(`/api/medicines/${id}`, data);
+  }
+
+  async deleteMedicine(id: number) {
+    return this.delete(`/api/medicines/${id}`);
+  }
+
+  //  4: Pharmacy incoming orders
+  async getPharmacyOrders() {
+    return this.get('/api/pharmacy/orders');
   }
 
   handleError(error: any) {
