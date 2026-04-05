@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import '../styles/Home.css';
 
 const apiClient = new ApiClient();
+const PAGE_SIZE = 9;
 
 interface Medicine {
   id: number;
@@ -21,10 +22,11 @@ export default function Home() {
   const [medicines, setMedicines] = useState<Medicine[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
   const navigate = useNavigate();
 
   const handleAddToCart = async (e: React.MouseEvent, medicineId: number) => {
-    e.stopPropagation(); // prevent card click
+    e.stopPropagation();
     try {
       await apiClient.addToCart(medicineId, 1);
       toast.success('Added to cart!');
@@ -44,11 +46,19 @@ export default function Home() {
     fetchMedicines();
   }, []);
 
+  // Reset to page 1 whenever search changes
+  useEffect(() => {
+    setPage(1);
+  }, [search]);
+
   const filtered = medicines.filter(
     (m) =>
       m.name.toLowerCase().includes(search.toLowerCase()) ||
       m.generic_name.toLowerCase().includes(search.toLowerCase())
   );
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <div className="home-root">
@@ -95,7 +105,7 @@ export default function Home() {
         )}
 
         <div className="med-grid">
-          {filtered.map((m, i) => (
+          {paginated.map((m, i) => (
             <div
               className="med-card"
               key={m.id}
@@ -146,6 +156,33 @@ export default function Home() {
             </div>
           ))}
         </div>
+
+        {/* PAGINATION — only shows when there is more than one page */}
+        {!loading && totalPages > 1 && (
+          <div className="pagination-row">
+            <button
+              className="page-btn"
+              onClick={() => setPage((p) => p - 1)}
+              disabled={page === 1}
+            >
+              ← Prev
+            </button>
+
+            <span className="page-info">
+              Page {page}
+              <span className="page-total"> of {totalPages}</span>
+            </span>
+
+            <button
+              className="page-btn"
+              onClick={() => setPage((p) => p + 1)}
+              disabled={page === totalPages}
+            >
+              Next →
+            </button>
+          </div>
+        )}
+
       </div>
     </div>
   );
